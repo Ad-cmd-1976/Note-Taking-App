@@ -1,14 +1,22 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import connectDb from './lib/db';
+import authRoutes from './routes/auth.route';
 
 dotenv.config();
 
 const app=express();
-const PORT=process.env.PORT || 8080;
+const PORT=process.env.PORT as string || 8080;
 
-app.use(cors());
+app.use(cors({
+    origin:["http://localhost:5173"],
+    credentials:true
+}));
 app.use(express.json());
+app.use(express.urlencoded({ extended:true }));
+
+app.use('/auth', authRoutes);
 
 app.get('/', (req: Request ,res: Response)=>{
     res.send("Hello from Express+Typescript");
@@ -16,4 +24,5 @@ app.get('/', (req: Request ,res: Response)=>{
 
 app.listen(PORT, ()=>{
     console.log(`Server running at PORT: ${PORT}`);
+    connectDb();
 })

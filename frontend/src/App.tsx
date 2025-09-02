@@ -1,19 +1,26 @@
 import './App.css';
-import { Route, Routes } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import SignupPage from './pages/SignupPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import { Toaster } from 'react-hot-toast';
+import { useAuthStore } from './store/useAuthStore'
+
+useEffect(()=>{
+  
+},[]);
 
 function App() {
-
+  const { user }=useAuthStore();
   return (
     <>
-      <h2 className='text-center'>Hello this is the beginning</h2>
       <Routes>
-        <Route path='/' element={<SignupPage/>}></Route>
-        <Route path='/login' element={<LoginPage/>}></Route>
-        <Route path='/dashboard' element={<DashboardPage/>}></Route>
+        <Route path='/' element={!user ? <SignupPage/> : <Navigate to='/dashboard'/>}></Route>
+        <Route path='/login' element={!user ? <LoginPage/>: <Navigate to='/dashboard'/>}></Route>
+        <Route path='/dashboard' element={user ?<DashboardPage/>: <Navigate to='/'/>}></Route>
       </Routes>
+      <Toaster />
     </>
   )
 }
