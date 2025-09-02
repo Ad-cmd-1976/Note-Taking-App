@@ -18,7 +18,7 @@ const generateToken=(userId: string): string=>{
     return accesstoken;
 }
 
-export const generateOtp=async (req : Request, res : Response)=>{
+export const generateSignupOtp=async (req : Request, res : Response)=>{
     try{
         const { name, email, dob }=req.body;
 
@@ -41,7 +41,7 @@ export const generateOtp=async (req : Request, res : Response)=>{
         return res.status(201).json({ message:"Otp Sent Successfully" });
     }
     catch(error){
-        console.log("Error in generateOtp function of auth controller:", error);
+        console.log("Error in generateSignupOtp function of auth controller:", error);
         return res.status(500).json({ message:"Internal Server Error" });
     }
 }
@@ -49,20 +49,20 @@ export const generateOtp=async (req : Request, res : Response)=>{
 export const signup=async (req: Request, res: Response)=>{
     try{
         const { name, email, dob, otp }=req.body;
-
+        
         if(!name || !dob || !email || !otp){
             return res.status(400).json({ message:"All fields are required! "});
         }
         if(storeOtp[email]!==otp){
             return res.status(400).json({ message:"Invalid or expired otp" });
         }
-
+        
         const newUser=new UserModel({ name:name, email:email, dob:dob });
         const accessToken: string=generateToken(newUser._id as string);
         setCookie(res, accessToken);
         await newUser.save();
         delete(storeOtp[email]);
-
+        
         return res.status(201).json({ 
             _id: newUser._id,
             name: newUser.name,
@@ -71,17 +71,66 @@ export const signup=async (req: Request, res: Response)=>{
         });
     }
     catch(error){
-        console.log("Error in signup function of auth controller", error);
+        if(error instanceof Error) console.log("Error in sign function of auth controller", error);
+        return res.status(500).json({ message:"Internal Server Error! "});
+    }
+}
+
+export const generateLoginOtp=async (req: Request, res: Response)=>{
+    try{
+        const { email }=req.body;
+        
+        if(!email){
+            return res.status(400).json({ message:"Email required!" });
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            return res.status(400).json({ message: 'Invalid email address' });
+        }
+        
+        const isExistingUser=await UserModel.findOne({ email:email });
+        if(!isExistingUser){
+            return res.status(404).json({ message: "User not found!" });
+        }
+        
+        const otp: string=Math.floor(100000 + Math.random()*900000).toString();
+        await sendOtpMail(email,otp);
+        storeOtp[email]=otp;
+        
+        return res.status(201).json({ message:"Otp Sent Successfully" });
+    }
+    catch(error){
+        if(error instanceof Error) console.log("Error in checkAuth function of auth controller", error);
         return res.status(500).json({ message:"Internal Server Error! "});
     }
 }
 
 export const login=async (req: Request, res: Response)=>{
     try{
+        const { email, otp }=req.body;
         
+        if(!email || !otp){
+            return res.status(400).json({ message:"All fields are required! "});
+        }
+        if(storeOtp[email]!==otp){
+            return res.status(400).json({ message:"Invalid or expired otp" });
+        }
+        
+        const newUser=await UserModel.findOne({ email:email });
+        const accessToken: string=generateToken(newUser?._id as string);
+        setCookie(res, accessToken);
+        await newUser?.save();
+        delete(storeOtp[email]);
+        
+        return res.status(201).json({ 
+            _id: newUser?._id,
+            name: newUser?.name,
+            email: newUser?.email,
+            message:"Signup Successfull! "
+        });
     }
     catch(error){
-        
+        if(error instanceof Error) console.log("Error in login function of auth controller", error);
+        return res.status(500).json({ message:"Internal Server Error! "});
     }
 }
 

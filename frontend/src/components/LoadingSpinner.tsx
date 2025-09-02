@@ -2,10 +2,10 @@ import { Loader } from "lucide-react";
 
 const LoadingSpinner = () => {
   return (
-    <div className="text-black bg-white flex justify-center items-center min-h-screen">
-        <Loader className="animate-spin size-6"/>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/10 backdrop-blur-md">
+      <Loader className="animate-spin text-gray-600 size-7" />
     </div>
-  )
-}
+  );
+};
 
-export default LoadingSpinner
+export default LoadingSpinner;

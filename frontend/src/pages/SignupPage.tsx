@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useAuthStore from "../store/useAuthStore";
 import { Calendar } from "lucide-react";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -10,7 +11,7 @@ export default function Signup() {
     otp: "",
   });
 
-  const { getOtp, otpSent, signup }=useAuthStore();
+  const { getSignupOtp, otpSent, signup, isLoading }=useAuthStore();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -18,20 +19,18 @@ export default function Signup() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log(formData);
-    if (!otpSent) getOtp(formData);
+    if (!otpSent) getSignupOtp(formData);
      else {
       signup(formData);
       console.log("Form submitted:", formData);
     }
   };
-
+  if(isLoading) return (<LoadingSpinner/>)
   return (
     <div className="h-screen flex items-center justify-center bg-white">
       <div className="flex w-full h-full bg-white rounded-3xl shadow-2xl overflow-hidden">
         
-        {/* Left section */}
         <div className="w-full md:w-1/2 p-8">
-          {/* Logo */}
           <div className="flex justify-between pl-3">
             <div className="flex gap-2 mb-6 items-center">
               <div className="w-6 h-6 bg-blue-500 rounded-full" />
@@ -39,7 +38,6 @@ export default function Signup() {
             </div>
           </div>
 
-          {/* Form container */}
           <div className="flex justify-center items-center h-full pb-20">
             <div className="flex flex-col w-[60%]">
               <h2 className="text-2xl font-bold mb-2">Sign up</h2>
@@ -47,7 +45,6 @@ export default function Signup() {
                 Sign up to enjoy the feature of HD
               </p>
 
-              {/* Form */}
               <form className="space-y-4" onSubmit={handleSubmit}>
                     <div>
                       <input
@@ -62,7 +59,6 @@ export default function Signup() {
 
 
                     <div className="relative w-full">
-                      {/* Calendar Icon */}
                       <Calendar
                         className="absolute left-3 top-1/2 -translate-y-1/2 text-black w-5 h-5 pointer-events-none"
                       />
@@ -112,7 +108,7 @@ export default function Signup() {
 
               <p className="text-sm text-center text-gray-600 mt-4">
                 Already have an account??{" "}
-                <a href="/signin" className="text-blue-500 hover:underline">
+                <a href="/login" className="text-blue-500 hover:underline">
                   Sign in
                 </a>
               </p>
@@ -120,7 +116,6 @@ export default function Signup() {
           </div>
         </div>
 
-        {/* Right section */}
         <div className="hidden md:block w-7/12 h-full p-1">
           <img
             src="https://wallpaperaccess.com/full/317501.jpg"
