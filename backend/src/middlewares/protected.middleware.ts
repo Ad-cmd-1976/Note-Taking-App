@@ -14,12 +14,12 @@ interface CustomJwtPayload extends JwtPayload {
 
 export const protectedRoute=async (req: Request, res: Response, next: NextFunction)=>{
     try{
-        const accessToken=req.cookies.accessToken;
+        const { accessToken }=req.cookies;
         if(!accessToken)  return res.status(400).json({ message: "Login to use the services!" });
         try{
-            const decoded=jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET as string) as CustomJwtPayload;
+            const decoded=jwt.verify(accessToken, process.env.JWT_SECRET as string) as CustomJwtPayload;
 
-            if(decoded.userId) return res.status(401).json({ message:"Invalid Token!" });
+            if(!decoded.userId) return res.status(401).json({ message:"Invalid Token!" });
 
             const user=await UserModel.findById(decoded.userId);
             if(!user) return res.status(401).json({ message:"User Not Found!"});

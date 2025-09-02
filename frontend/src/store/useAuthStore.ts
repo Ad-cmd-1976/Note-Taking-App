@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import axios from '../lib/axios';
 import { toast } from 'react-hot-toast';
+import type { AxiosError } from "axios";
 
 interface User{
     _id: string,
@@ -11,14 +12,17 @@ interface User{
 
 interface AuthState{
     user: User | null,
+    isLoading: Boolean,
     otpSent: Boolean,
     getOtp: (formData:{ name:string, email:string, otp: string, dob: string })=>void,
     signup: (formData:{ name:string, email:string, otp: string, dob: string })=>void,
+    checkAuth: ()=>void,
 }
 
-export const useAuthStore=create<AuthState>((set,get)=>({
+export const useAuthStore=create<AuthState>((set)=>({
     user: null,
     otpSent:false,
+    isLoading:false,
 
     getOtp: async (formData:{ name:string, email:string, otp: string, dob: string })=>{
         try{
@@ -26,9 +30,10 @@ export const useAuthStore=create<AuthState>((set,get)=>({
             set({ otpSent: true });
             console.log(res);
         }
-        catch(error){
-            console.log("Error in getting Otp", error);
-            toast.error(error.response.data.message);
+        catch(err){
+            const error = err as AxiosError<{ message: string }>;
+            if (error.response?.data?.message) toast.error(error.response.data.message);
+            else toast.error("Something went wrong!");
         }
     },
 
@@ -38,13 +43,24 @@ export const useAuthStore=create<AuthState>((set,get)=>({
             set({ user: res.data });
             toast.success(res.data.message);
         }
-        catch(error){
-            console.log("Error in signup function of useAuthStore", error);
-            toast.error(error.response.data.message);
+        catch(err){
+            const error = err as AxiosError<{ message: string }>;
+            if (error.response?.data?.message) toast.error(error.response.data.message);
+            else toast.error("Something went wrong!");
         }
     },
-
-
+    
+    checkAuth: async ()=>{
+        try{
+            const res=await axios.post('/auth/checkAuth');
+            set({ user: res.data.user });
+        }
+        catch(err){
+            const error = err as AxiosError<{ message: string }>;
+            if (error.response?.data?.message) toast.error(error.response.data.message);
+            else toast.error("Something went wrong!");
+        }
+    },
 }));
 
 export default useAuthStore;

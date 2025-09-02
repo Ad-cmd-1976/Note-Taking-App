@@ -6,13 +6,17 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from './store/useAuthStore'
+import LoadingSpinner from './components/LoadingSpinner';
 
-useEffect(()=>{
-  
-},[]);
 
 function App() {
-  const { user }=useAuthStore();
+  const { user, checkAuth, isLoading }=useAuthStore();
+
+  useEffect(()=>{
+    checkAuth();
+  },[checkAuth]);
+
+  if(isLoading) return (<LoadingSpinner/>)
   return (
     <>
       <Routes>
