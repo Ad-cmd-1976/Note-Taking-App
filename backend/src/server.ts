@@ -12,7 +12,7 @@ const app=express();
 const PORT=process.env.PORT as string || 8080;
 
 app.use(cors({
-    origin:["http://localhost:5173"],
+    origin:["http://localhost:5173", process.env.CLIENT_URL as string],
     credentials:true
 }));
 app.use(express.json());
@@ -22,8 +22,8 @@ app.use(cookieParser());
 app.use('/auth', authRoutes);
 app.use('/note', noteRoutes);
 
-app.get('/', (req: Request ,res: Response)=>{
-    res.send("Hello from Express+Typescript");
+app.get("*", (req: Request, res: Response)=>{
+    res.send("Api working!");
 })
 
 app.listen(PORT, ()=>{
