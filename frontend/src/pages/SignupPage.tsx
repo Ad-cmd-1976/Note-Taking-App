@@ -1,28 +1,18 @@
-import { useState } from "react";
 import useAuthStore from "../store/useAuthStore";
 import { Calendar } from "lucide-react";
 import LoadingSpinner from "../components/LoadingSpinner";
+import FormField from "../components/FormField";
 
 export default function Signup() {
-  const [formData, setFormData] = useState({
-    name: "",
-    dob: "",
-    email: "",
-    otp: "",
-  });
+  const { name, email, dob, otp, setname, setemail, setdob, setotp }=useAuthStore();
 
   const { getSignupOtp, otpSent, signup, isLoading }=useAuthStore();
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
-    if (!otpSent) getSignupOtp(formData);
+    if (!otpSent) getSignupOtp({ name , email, dob, otp });
      else {
-      signup(formData);
-      console.log("Form submitted:", formData);
+      signup({ name, email, dob, otp});
     }
   };
   if(isLoading) return (<LoadingSpinner/>)
@@ -46,16 +36,14 @@ export default function Signup() {
               </p>
 
               <form className="space-y-4" onSubmit={handleSubmit}>
-                    <div>
-                      <input
-                        type="text"
-                        name="name"
-                        placeholder="Your Name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
+                    <FormField
+                    id="name"
+                    content="Name"
+                    value={name}
+                    onChange={(e)=>setname(e.target.value)}
+                    type="text"
+                    placeholder=""
+                    />
 
 
                     <div className="relative w-full">
@@ -66,22 +54,21 @@ export default function Signup() {
                       <input
                         type="text"
                         name="dob"
-                        value={formData.dob}
-                        onChange={handleChange}
+                        value={dob}
+                        onChange={(e)=>setdob(e.target.value)}
                         className="w-full border rounded-md pl-10 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
                       />
                     </div>
 
-                    <div>
-                      <input
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
+                    <FormField
+                    id="email"
+                    content="Email"
+                    value={email}
+                    onChange={(e)=>setemail(e.target.value)}
+                    type="text"
+                    placeholder=""
+                    />
+                    
 
 
                 {otpSent && (
@@ -90,8 +77,8 @@ export default function Signup() {
                       type="text"
                       name="otp"
                       placeholder="Enter OTP"
-                      value={formData.otp}
-                      onChange={handleChange}
+                      value={otp}
+                      onChange={(e)=>setotp(e.target.value)}
                       className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>

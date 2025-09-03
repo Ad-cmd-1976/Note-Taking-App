@@ -1,22 +1,16 @@
-import { useState } from "react";
 import useAuthStore from "../store/useAuthStore";
 import { Link } from "react-router-dom";
+import FormField from "../components/FormField";
 
 export default function Signup() {
-  const [formData, setFormData] = useState({
-    email: "",
-    otp: "",
-  });
 
-  const { getLoginOtp, otpSent, login  }=useAuthStore();
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+
+  const { getLoginOtp, otpSent, login, loginEmail, loginOtp, setLoginEmail, setLoginOtp  }=useAuthStore();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!otpSent) getLoginOtp(formData);
-     else login(formData);
+    if (!otpSent) getLoginOtp({ loginEmail, loginOtp});
+     else login({ loginEmail, loginOtp });
   };
 
   return (
@@ -39,32 +33,28 @@ export default function Signup() {
               </p>
 
               <form className="space-y-4" onSubmit={handleSubmit}>
-                <div>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
+                <FormField
+                    id="email"
+                    content="Email"
+                    value={loginEmail}
+                    onChange={(e)=>setLoginEmail(e.target.value)}
+                    type="text"
+                    placeholder=""
+                />
 
                 {otpSent && (
                   <>
-                  <div>
-                    <input
+                  <FormField
+                      id="otp"
+                      content="Otp"
+                      value={loginOtp}
+                      onChange={(e)=>setLoginOtp(e.target.value)}
                       type="text"
-                      name="otp"
-                      placeholder="Enter OTP"
-                      value={formData.otp}
-                      onChange={handleChange}
-                      className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
+                      placeholder=""
+                  />
                   <div 
                   className="text-[#367AFF] underline underline-offset-1 cursor-pointer"
-                  onClick={()=>getLoginOtp(formData)}
+                  onClick={()=>getLoginOtp({ loginEmail, loginOtp })}
                   >
                       Resend OTP 
                   </div>
