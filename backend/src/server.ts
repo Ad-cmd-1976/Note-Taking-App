@@ -22,10 +22,6 @@ app.use(cookieParser());
 app.use('/auth', authRoutes);
 app.use('/note', noteRoutes);
 
-app.get("*", (req: Request, res: Response)=>{
-    res.send("Api working!");
-})
-
 app.listen(PORT, ()=>{
     console.log(`Server running at PORT: ${PORT}`);
     connectDb();
