@@ -90,7 +90,6 @@ export const useAuthStore=create<AuthState>((set)=>({
     
     getLoginOtp: async (formData:{ loginEmail:string, loginOtp:string })=>{
         set({ isLoading:true });
-        console.log(formData);
         try{
             const res=await axios.post('/auth/request-login-otp', formData);
             toast.success(res.data.message); 

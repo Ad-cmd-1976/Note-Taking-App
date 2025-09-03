@@ -111,7 +111,6 @@ export default function Signup() {
           className="w-full h-full object-cover rounded-3xl"
           loading="lazy"
         />
-
         </div>
       </div>
     </div>

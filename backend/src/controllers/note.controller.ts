@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import NoteModel from '../models/note.model';
-import { Iuser } from "../models/user.model";
 
 export const getAllNotes=async (req: Request, res: Response)=>{
     try{

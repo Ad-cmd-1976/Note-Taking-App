@@ -1,6 +1,8 @@
 import useAuthStore from "../store/useAuthStore";
 import { Link } from "react-router-dom";
 import FormField from "../components/FormField";
+import wallpaper from '../assets/asset-image.jpg';
+import Logo from "../components/Logo";
 
 export default function Signup() {
 
@@ -20,7 +22,7 @@ export default function Signup() {
         <div className="w-full md:w-1/2 p-8">
           <div className="flex md:justify-between justify-center pl-3">
             <div className="flex gap-2 mb-6 items-center md:m-0 mr-6">
-              <div className="w-6 h-6 bg-blue-500 rounded-full" />
+              <Logo />
               <span className="font-semibold text-lg">HD</span>
             </div>
           </div>
@@ -73,9 +75,6 @@ export default function Signup() {
                 </label>
               </div>
 
-
-
-
                 <button
                   type="submit"
                   className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
@@ -97,10 +96,11 @@ export default function Signup() {
 
         <div className="hidden md:block w-7/12 h-full p-1">
           <img
-            src="https://wallpaperaccess.com/full/317501.jpg"
-            alt="signup-banner"
-            className="w-full h-full object-cover rounded-3xl"
-          />
+          src={wallpaper}
+          alt="Windows 11 Bloom wallpaper (light)"
+          className="w-full h-full object-cover rounded-3xl"
+          loading="lazy"
+        />
         </div>
       </div>
     </div>

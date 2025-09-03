@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import useNoteStore from "../store/useNoteStore";
 import useAuthStore from "../store/useAuthStore";
 import { Trash2 } from "lucide-react";
+import Logo from '../components/Logo';
 
 function DashboardPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -21,7 +22,7 @@ function DashboardPage() {
         <div className="flex items-center justify-between mb-6 shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center">
-              <span className="text-blue-600 font-semibold">HD</span>
+              <Logo />
             </div>
             <h1 className="text-lg md:text-2xl font-semibold">Dashboard</h1>
           </div>
