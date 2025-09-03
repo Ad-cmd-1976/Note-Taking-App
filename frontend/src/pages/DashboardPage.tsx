@@ -10,7 +10,6 @@ function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="mx-auto max-w-xl md:max-w-4xl flex flex-col min-h-screen">
-        {/* Header */}
         <div className="flex items-center justify-between mb-6 shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center">
