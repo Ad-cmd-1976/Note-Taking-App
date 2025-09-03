@@ -9,7 +9,7 @@ function DashboardPage() {
   const [showForm, setShowForm] = useState(false);
 
   const { getAllNotes, createNote, notes, deleteNote, setTitle, setContent, title, content }=useNoteStore();
-  const { user }=useAuthStore();
+  const { user, logout }=useAuthStore();
 
   useEffect(()=>{
     getAllNotes();
@@ -25,7 +25,12 @@ function DashboardPage() {
             </div>
             <h1 className="text-lg md:text-2xl font-semibold">Dashboard</h1>
           </div>
-          <button className="text-sm text-blue-600 hover:underline">Sign Out</button>
+          <div 
+          className="text-sm text-blue-600 hover:underline cursor-pointer"
+          onClick={()=>logout()}
+          >
+            Sign Out
+          </div>
         </div>
 
         <div className="bg-white rounded-lg p-4 shadow-sm mb-5 shrink-0">
@@ -96,12 +101,10 @@ function DashboardPage() {
                   className="bg-white rounded-lg p-3 shadow-sm flex items-start justify-between cursor-pointer"
                 >
                   <div className="flex-1 pr-3 overflow-hidden">
-                    {/* Title */}
                     <div className="font-medium text-gray-800 truncate">
                       {note.title}
                     </div>
 
-                    {/* Content */}
                     <div className="mt-1 text-gray-600">
                       <AnimatePresence initial={false} mode="wait">
                       {expandedId !== note._id ? (

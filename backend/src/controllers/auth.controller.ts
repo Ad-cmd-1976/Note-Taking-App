@@ -71,7 +71,7 @@ export const signup=async (req: Request, res: Response)=>{
         });
     }
     catch(error){
-        if(error instanceof Error) console.log("Error in sign function of auth controller", error);
+        if(error instanceof Error) console.log("Error in signup function of auth controller", error);
         return res.status(500).json({ message:"Internal Server Error! "});
     }
 }
@@ -99,7 +99,7 @@ export const generateLoginOtp=async (req: Request, res: Response)=>{
         return res.status(201).json({ message:"Otp Sent Successfully" });
     }
     catch(error){
-        if(error instanceof Error) console.log("Error in checkAuth function of auth controller", error);
+        if(error instanceof Error) console.log("Error in generateLoginOtp function of auth controller", error);
         return res.status(500).json({ message:"Internal Server Error! "});
     }
 }
@@ -127,6 +127,22 @@ export const login=async (req: Request, res: Response)=>{
             email: newUser?.email,
             message:"Signup Successfull! "
         });
+    }
+    catch(error){
+        if(error instanceof Error) console.log("Error in login function of auth controller", error);
+        return res.status(500).json({ message:"Internal Server Error! "});
+    }
+}
+
+export const logout=async (req: Request, res: Response)=>{
+    try{
+        res.clearCookie("accessToken", {
+            httpOnly:true,
+            sameSite:"strict",
+            secure: process.env.NODE_ENV==="production",
+            path:'/'
+        });
+        return res.status(201).json({ message:"Logged Out Successfully!" });
     }
     catch(error){
         if(error instanceof Error) console.log("Error in login function of auth controller", error);

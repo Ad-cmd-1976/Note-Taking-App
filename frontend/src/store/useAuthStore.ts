@@ -18,6 +18,7 @@ interface AuthState{
     getLoginOtp: (formData:{ email:string, otp: string })=>void,
     signup: (formData:{ name:string, email:string, otp: string, dob: string })=>void,
     login: (formData:{ email:string, otp:string })=>void,
+    logout: ()=>void;
     checkAuth: ()=>void,
 }
 
@@ -94,6 +95,19 @@ export const useAuthStore=create<AuthState>((set)=>({
         }
     },
     
+    logout: async ()=>{
+        try{
+            const res=await axios.post('/auth/logout');
+            toast.success(res.data.message);
+            set({ user: null })
+        }
+        catch(err){
+            const error = err as AxiosError<{ message: string }>;
+            if (error.response?.data?.message) toast.error(error.response.data.message);
+            else toast.error("Something went wrong!");
+        }
+    },
+
     checkAuth: async ()=>{
         set({ isLoading:true });
         try{
