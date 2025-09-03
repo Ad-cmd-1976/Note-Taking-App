@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useAuthStore from "../store/useAuthStore";
+import { Link } from "react-router-dom";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -50,6 +51,7 @@ export default function Signup() {
                 </div>
 
                 {otpSent && (
+                  <>
                   <div>
                     <input
                       type="text"
@@ -60,14 +62,15 @@ export default function Signup() {
                       className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
+                  <div 
+                  className="text-[#367AFF] underline underline-offset-1 cursor-pointer"
+                  onClick={()=>getLoginOtp(formData)}
+                  >
+                      Resend OTP 
+                  </div>
+                </>
                 )}
 
-                <div 
-                className="text-[#367AFF] underline underline-offset-1 cursor-pointer"
-                onClick={()=>getLoginOtp(formData)}
-                >
-                    Resend OTP 
-                </div>
 
                 <div className="flex items-center space-x-2">
                 <input
@@ -94,9 +97,9 @@ export default function Signup() {
 
               <p className="text-sm text-center text-gray-600 mt-4">
                 Need an account??{" "}
-                <a href="/signup" className="text-blue-500 hover:underline">
+                <Link to="/" className="text-blue-500 hover:underline">
                   Create One
-                </a>
+                </Link>
               </p>
             </div>
           </div>

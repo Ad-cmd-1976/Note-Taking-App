@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import connectDb from './lib/db';
 import authRoutes from './routes/auth.route';
 import cookieParser from 'cookie-parser';
+import noteRoutes from './routes/note.route';
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ extended:true }));
 app.use(cookieParser());
 
 app.use('/auth', authRoutes);
+app.use('/note', noteRoutes);
 
 app.get('/', (req: Request ,res: Response)=>{
     res.send("Hello from Express+Typescript");
