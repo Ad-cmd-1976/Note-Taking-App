@@ -9,7 +9,8 @@ const setCookie=(res: Response, token: string): void=>{
     res.cookie("accessToken", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV=="production",
-        sameSite:"strict",
+        sameSite: process.env.NODE_ENV==="production" ? "none": "lax",
+        path:'/',
         maxAge: 7*24*60*60*1000
     })
 }
@@ -138,7 +139,7 @@ export const logout=async (req: Request, res: Response)=>{
     try{
         res.clearCookie("accessToken", {
             httpOnly:true,
-            sameSite:"strict",
+            sameSite:process.env.NODE_ENV==="production" ? "none" : "lax",
             secure: process.env.NODE_ENV==="production",
             path:'/'
         });
