@@ -138,7 +138,7 @@ export const useAuthStore=create<AuthState>((set)=>({
     checkAuth: async ()=>{
         set({ isLoading:true });
         try{
-            const res=await axios.post('/auth/checkAuth');
+            const res=await axios.post('/auth/checkAuth', {});
             set({ user: res.data.user });
         }
         catch(err){
