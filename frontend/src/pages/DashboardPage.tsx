@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import useNoteStore from "../store/useNoteStore";
+import useAuthStore from "../store/useAuthStore";
+import { Trash2 } from "lucide-react";
 
 function DashboardPage() {
-  const [expanded, setExpanded] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+
+  const { getAllNotes, createNote, notes, deleteNote, setTitle, setContent, title, content }=useNoteStore();
+  const { user }=useAuthStore();
+
+  useEffect(()=>{
+    getAllNotes();
+  },[])
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
@@ -22,9 +30,9 @@ function DashboardPage() {
 
         <div className="bg-white rounded-lg p-4 shadow-sm mb-5 shrink-0">
           <h2 className="font-bold text-lg md:text-xl">
-            Welcome, <span className="text-gray-800">User</span> !
+            Welcome, <span className="text-gray-800">{user?.name}</span> !
           </h2>
-          <p className="text-sm text-gray-500 mt-1">Email: user@example.com</p>
+          <p className="text-sm text-gray-500 mt-1">Email: {user?.email}</p>
         </div>
 
         <div className="mb-5 shrink-0">
@@ -61,7 +69,10 @@ function DashboardPage() {
                   className="w-full border border-gray-300 rounded-lg p-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <div className="flex justify-end">
-                  <button className="w-16 bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700 transition">
+                  <button 
+                  className="w-16 bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700 transition"
+                  onClick={()=>createNote({ title, content})}
+                  >
                     Create
                   </button>
                 </div>
@@ -74,52 +85,64 @@ function DashboardPage() {
           <h3 className="text-sm text-gray-700 font-medium mb-3 shrink-0">Notes</h3>
 
           <div className="space-y-3">
-            <motion.div
-              layout
-              onClick={() => setExpanded(expanded === 1 ? null : 1)}
-              aria-expanded={expanded === 1}
-              className="bg-white rounded-lg p-3 shadow-sm flex items-start justify-between cursor-pointer"
-            >
-              <div className="flex-1 pr-3 overflow-hidden">
-                <div className="font-medium text-gray-800 truncate">Note 1</div>
-                <div className="mt-1 text-gray-600">
-                  <AnimatePresence initial={false} mode="wait">
-                    {expanded !== 1 ? (
-                      <motion.p
-                        key="n1-collapsed"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.15 }}
-                        className="text-xs text-gray-500 line-clamp-3"
-                      >
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit...
-                      </motion.p>
-                    ) : (
-                      <motion.div
-                        key="n1-expanded"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <p className="text-sm text-gray-700 whitespace-pre-wrap">
-                          Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure,
-                          quis vitae dicta quasi excepturi nihil, corporis deleniti autem...
-                        </p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
+            {notes.map((note) => (
+                <motion.div
+                  key={note._id}
+                  layout
+                  onClick={() =>
+                    setExpandedId(expandedId === note._id ? null : note._id)
+                  }
+                  aria-expanded={expandedId === note._id}
+                  className="bg-white rounded-lg p-3 shadow-sm flex items-start justify-between cursor-pointer"
+                >
+                  <div className="flex-1 pr-3 overflow-hidden">
+                    {/* Title */}
+                    <div className="font-medium text-gray-800 truncate">
+                      {note.title}
+                    </div>
 
-              <button
-                className="p-2 rounded-md hover:bg-gray-100"
-                onClick={(e) => e.stopPropagation()}
-              >
-                🗑
-              </button>
+                    {/* Content */}
+                    <div className="mt-1 text-gray-600">
+                      <AnimatePresence initial={false} mode="wait">
+                      {expandedId !== note._id ? (
+                        <motion.p
+                          key={`${note._id}-collapsed`}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.15 }}
+                          className="text-xs text-gray-500 line-clamp-3"
+                          >
+                              {note.content}
+                          </motion.p>
+                              ) : (
+                          <motion.div
+                                key={`${note._id}-expanded`}
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.2 }}
+                          >
+                            <p className="text-sm text-gray-700 whitespace-pre-wrap">
+                                {note.content}
+                            </p>
+                          </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+
+                <div
+                className="p-2 rounded-md hover:bg-gray-100 text-gray-600 hover:text-red-600 transition"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteNote(note._id);
+                }}
+                >
+                <Trash2 className="w-5 h-5" />
+              </div>
             </motion.div>
+            ))}
           </div>
         </div>
       </div>
